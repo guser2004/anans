@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RomanceFlix - ภาพยนตร์โรแมนติกแนะนำ</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Kanit', sans-serif;
+            transition: background-image 0.4s ease;
+        }
+
+        body {
+            background-image: url('ggjk.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-color: #0f0a14;
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body.alt-theme { background-image: url('ggjkkk.png'); }
+
+        /* --- Custom Cursor Glow & Sparkle Trail --- */
+        #cursor-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 350px;
+            height: 350px;
+            margin-left: -175px;
+            margin-top: -175px;
+            background: radial-gradient(circle, rgba(255, 51, 102, 0.22) 0%, rgba(147, 51, 234, 0.12) 45%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transition: transform 0.08s ease-out;
+            mix-blend-mode: screen;
+        }
+
+        .sparkle {
+            position: fixed;
+            pointer-events: none;
+            border-radius: 50%;
+            background: #ffffff;
+            box-shadow: 0 0 10px #ff3366, 0 0 20px #ff79b0, 0 0 30px #9333ea;
+            animation: sparkleAnim 0.7s linear forwards;
+            z-index: 9999;
+        }
+
+        @keyframes sparkleAnim {
+            0% {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0.2) translateY(20px);
+                opacity: 0;
+            }
+        }
+
+        .click-ripple {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            margin-left: -10px;
+            margin-top: -10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 25px #ff3366, 0 0 50px #ff79b0;
+            pointer-events: none;
+            z-index: 10000;
+            animation: rippleEffect 0.6s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+        }
+
+        @keyframes rippleEffect {
+            0% {
+                transform: scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(12);
+                opacity: 0;
+            }
+        }
+
+        /* --- Navbar --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            background-color: rgba(15, 10, 20, 0.85);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 121, 176, 0.12);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 22px;
+            font-weight: bold;
+            font-style: italic;
+            color: #ffffff;
+            cursor: pointer;
+            text-shadow: 0 0 10px rgba(255, 51, 102, 0.4);
+        }
+
+        .logo i { color: #ff3366; }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        nav a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        nav a.active { color: #ff9ebb; }
+        nav a:not(.disabled):hover { color: #ff9ebb; }
+
+        nav a.disabled {
+            pointer-events: none !important;
+            cursor: not-allowed !important;
+            opacity: 0.4 !important;
+            color: #888888 !important;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .back-home-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border: 1px solid rgba(255, 121, 176, 0.3);
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.06);
+            color: #ffffff;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .back-home-btn:hover {
+            background: rgba(255, 51, 102, 0.2);
+            border-color: #ff3366;
+            color: #ff9ebb;
+        }
+
+        .back-home-btn i { color: #ff3366; }
+
+        .color-theme-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 18px;
+            border: 1px solid rgba(255, 121, 176, 0.5);
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            outline: none;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .color-theme-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 51, 102, 0.25);
+            border-color: #ff3366;
+            box-shadow: 0 5px 15px rgba(255, 51, 102, 0.4);
+        }
+
+        .color-theme-btn i { color: #ff9ebb; }
+
+        /* --- Page Sections Control --- */
+        .page-section { display: none; }
+        .page-section.active { display: block; }
+
+        /* --- Hero Banner (หน้าแรก) --- */
+        .hero {
+            margin: 20px 5% 15px 5%;
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 121, 176, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 50%;
+            left: 6%;
+            transform: translateY(-50%);
+            color: #ffffff;
+            max-width: 500px;
+            z-index: 2;
+            background: rgba(15, 10, 20, 0.4);
+            padding: 25px 30px;
+            border-radius: 16px;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 121, 176, 0.2);
+        }
+
+        .hero-overlay h2 {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ffffff, #ff79b0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .hero-overlay p {
+            font-size: 14px;
+            color: #e2e8f0;
+            margin-bottom: 18px;
+            line-height: 1.6;
+        }
+
+        .hero-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #ff3366, #ff5e83);
+            color: #fff;
+            padding: 10px 22px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 51, 102, 0.4);
+            transition: 0.3s;
+        }
+
+        .hero-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 51, 102, 0.6);
+        }
+
+        /* --- ส่วนเพิ่มเติมในหน้าแรกแก้ความโล่ง (Home Extra Content) --- */
+        .home-extra-container {
+            padding: 0 5% 30px 5%;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+
+        /* กล่องคำแนะนำ / คำคมประจำวัน */
+        .recommendation-card {
+            background: rgba(21, 14, 33, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 121, 176, 0.2);
+            border-radius: 16px;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .rec-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #ff79b0;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .rec-content p {
+            font-size: 13.5px;
+            color: #e2e8f0;
+            line-height: 1.6;
+            font-style: italic;
+            margin-bottom: 12px;
+        }
+
+        .rec-footer {
+            font-size: 12px;
+            color: #ff3366;
+            font-weight: 500;
+            text-align: right;
+        }
+
+        /* แถบไฮไลท์หนังย่อหน้าแรก */
+        .home-highlight-section {
+            background: rgba(21, 14, 33, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 121, 176, 0.2);
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .home-highlight-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .home-highlight-title i { color: #ff3366; }
+
+        .mini-movie-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .mini-movie-card {
+            background: rgba(15, 10, 20, 0.6);
+            border: 1px solid rgba(255, 121, 176, 0.15);
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .mini-movie-card:hover {
+            transform: translateY(-4px;);
+            border-color: #ff3366;
+            box-shadow: 0 6px 15px rgba(255, 51, 102, 0.3);
+        }
+
+        .mini-poster {
+            height: 110px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .mini-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .mini-info {
+            padding: 8px;
+        }
+
+        .mini-info h4 {
+            font-size: 11px;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #fff;
+        }
+
+        .mini-info span {
+            font-size: 10px;
+            color: #ffc107;
+        }
+
+        /* --- Section: Movie Cards (หน้าภาพยนตร์) --- */
+        .section { padding: 30px 5%; }
+        .section-header { margin-bottom: 20px; }
+        .section-title h2 { font-size: 20px; font-weight: 600; display: flex; align-items: center; gap: 10px; color: #ffffff; }
+        .section-title i { color: #ff3366; }
+
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+        }
+
+        .movie-card {
+            background: rgba(21, 14, 33, 0.85);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 121, 176, 0.15);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(255, 51, 102, 0.6);
+            box-shadow: 0 10px 25px rgba(255, 51, 102, 0.25);
+        }
+
+        .poster-container {
+            position: relative;
+            height: 220px;
+            width: 100%;
+        }
+
+        .poster-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .year-tag {
+            position: absolute;
+            top: 8px; right: 8px;
+            background: rgba(15, 10, 20, 0.85);
+            border: 1px solid rgba(255, 51, 102, 0.4);
+            color: #ff79b0;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .movie-info { padding: 12px; }
+        .movie-info h3 { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; }
+        .movie-meta { font-size: 11px; color: #cbd5e1; margin-top: 4px; }
+        .movie-meta .rating { color: #ffc107; font-weight: 600; }
+        .movie-meta .revenue { color: #ff79b0; font-weight: 500; }
+
+        /* --- Section: Creator Profile (หน้าผู้จัดทำ) --- */
+        .creator-card {
+            max-width: 700px;
+            margin: 20px auto;
+            background: rgba(21, 14, 33, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 121, 176, 0.25);
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .creator-avatar {
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #ff3366;
+            background: radial-gradient(circle, #2d1235 0%, #150e21 70%, #0a050f 100%);
+            box-shadow: 0 0 30px rgba(255, 51, 102, 0.7);
+            margin-bottom: 20px;
+        }
+
+        .creator-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 5px;
+        }
+
+        .creator-role {
+            font-size: 14px;
+            color: #ff79b0;
+            margin-bottom: 20px;
+        }
+
+        .creator-details {
+            text-align: left;
+            background: rgba(15, 10, 20, 0.6);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 121, 176, 0.15);
+            margin-bottom: 20px;
+        }
+
+        .creator-details p {
+            font-size: 14px;
+            color: #cbd5e1;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .creator-details p strong {
+            color: #ffffff;
+        }
+
+        .creator-socials {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .creator-socials a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            color: #ff79b0;
+            border: 1px solid rgba(255, 121, 176, 0.3);
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .creator-socials a:hover {
+            background: #ff3366;
+            color: #ffffff;
+            transform: translateY(-3px);
+        }
+
+        /* --- Modal Popup --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(10, 5, 15, 0.88);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #150e21;
+            border: 1px solid rgba(255, 121, 176, 0.3);
+            border-radius: 16px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px; right: 20px;
+            font-size: 24px;
+            color: #ffffff;
+            background: rgba(0,0,0,0.5);
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: 0.3s;
+        }
+
+        .close-btn:hover { background: #ff3366; color: #fff; }
+
+        .modal-body { display: flex; flex-direction: column; }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%;
+            background: #000;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border: none;
+        }
+
+        .modal-details { padding: 25px; }
+
+        .modal-title-group { margin-bottom: 15px; }
+        .modal-title { font-size: 26px; font-weight: 700; color: #ffffff; }
+        .modal-subinfo { font-size: 13px; color: #ff79b0; margin-top: 6px; display: flex; gap: 15px; flex-wrap: wrap; }
+
+        .modal-section-title { color: #ff3366; font-size: 15px; font-weight: 600; margin-top: 18px; margin-bottom: 6px; }
+        .modal-text { color: #cbd5e1; font-size: 13.5px; line-height: 1.7; text-align: justify; }
+
+        .platforms-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .platform-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 121, 176, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12.5px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .platform-btn:hover {
+            background: rgba(255, 51, 102, 0.25);
+            border-color: #ff3366;
+            color: #ff9ebb;
+        }
+
+        @media (max-width: 1024px) { 
+            .movie-grid { grid-template-columns: repeat(3, 1fr); }
+            .home-extra-container { grid-template-columns: 1fr; }
+            .mini-movie-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 600px) { 
+            .movie-grid { grid-template-columns: repeat(2, 1fr); } 
+            .creator-avatar { width: 180px; height: 180px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- แสงตามเมาส์ -->
+    <div id="cursor-glow"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="logo" onclick="showPage('home')"><i class="fa-solid fa-heart"></i> RomanceFlix</div>
+        <nav>
+            <ul>
+                <li><a id="nav-home" class="active" onclick="showPage('home')"><i class="fa-solid fa-house"></i> หน้าแรก</a></li>
+                <li><a id="nav-movies" onclick="showPage('movies')"><i class="fa-solid fa-film"></i> ภาพยนตร์</a></li>
+                <li><a id="nav-creator" onclick="showPage('creator')"><i class="fa-solid fa-user"></i> ผู้จัดทำ</a></li>
+            </ul>
+        </nav>
+        <div class="header-right">
+            <button class="back-home-btn" onclick="showPage('home')">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span>ย้อนกลับหน้าแรก</span>
+            </button>
+            <button class="color-theme-btn" onclick="toggleBackground()">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <span>เปลี่ยนโทนสี</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- [หน้าแรก] Hero Banner และเนื้อหาเสริมกันโล่ง -->
+    <div id="homePage" class="page-section active">
+        <section class="hero">
+            <img src="web.png" alt="RomanceFlix Hero Banner">
+            <div class="hero-overlay">
+                <h2>WELCOME TO ROMANCEFLIX</h2>
+                <p>ศูนย์รวมภาพยนตร์โรแมนติกที่จะพาคุณไปสัมผัสทุกเฉดอารมณ์ความรัก ค้นพบหนังเรื่องโปรดของคุณได้ที่นี่</p>
+                <div class="hero-btn" onclick="showPage('movies')"><i class="fa-solid fa-heart"></i> สำรวจภาพยนตร์แนะนำ</div>
+            </div>
+        </section>
+
+        <!-- เพิ่มส่วนคำแนะนำและหนังไฮไลท์ด่วนด้านล่างแก้โล่ง -->
+        <div class="home-extra-container">
+            <!-- กล่องคำแนะนำ / คำคมประจำวัน -->
+            <div class="recommendation-card">
+                <div>
+                    <div class="rec-header">
+                        <i class="fa-solid fa-quote-left"></i> คำคม & คำแนะนำประจำวัน
+                    </div>
+                    <div class="rec-content">
+                        <p>"ความรักไม่ใช่การมองตาซึ่งกันและกัน แต่คือการมองไปในทิศทางเดียวกัน..."</p>
+                        <p style="font-size: 12.5px; color:#cbd5e1; font-style: normal; margin-top: 8px;">
+                            <i class="fa-solid fa-lightbulb" style="color: #ffc107;"></i> <strong>ทริคแนะนำ:</strong> เลือกหนังรักที่ตรงกับอารมณ์ของคุณวันนี้ แล้วเตรียมทิชชก์กับเครื่องดื่มแก้วโปรดให้พร้อม!
+                        </p>
+                    </div>
+                </div>
+                <div class="rec-footer">RomanceFlix Daily Inspiration</div>
+            </div>
+
+            <!-- แถบไฮไลท์ภาพยนตร์ยอดฮิตแบบย่อ -->
+            <div class="home-highlight-section">
+                <div class="home-highlight-title">
+                    <i class="fa-solid fa-fire"></i> ภาพยนตร์ยอดฮิตแนะนำด่วน
+                </div>
+                <div class="mini-movie-grid" id="miniMovieGrid">
+                    <!-- จะถูกเติมด้วย Javascript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- [หน้าภาพยนตร์] 10 เรื่องแนะนำ -->
+    <div id="moviesPage" class="page-section">
+        <section class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h2><i class="fa-solid fa-heart"></i> ภาพยนตร์โรแมนติกแนะนำ 10 เรื่องของไทย (คลิกที่การ์ดเพื่อดูรายละเอียด)</h2>
+                </div>
+            </div>
+            <div class="movie-grid" id="movieGrid"></div>
+        </section>
+    </div>
+
+    <!-- [หน้าผู้จัดทำ] รายละเอียดผู้จัดทำ -->
+    <div id="creatorPage" class="page-section">
+        <section class="section">
+            <div class="creator-card">
+                <img src="sarayut.png" alt="รูปผู้จัดทำ" class="creator-avatar">
+                <h2 class="creator-name">นาย ศราวุธ & นาย สิทธิพล แฉล้มขันธ์</h2>
+                <p class="creator-role">ตำแหน่ง: Web Developer & Designer</p>
+                
+                <div class="creator-details">
+                    <p><strong>ระดับชั้น:</strong> ปวช.3</p>
+                    <p><strong>สาขาวิชา:</strong> เทคโนโลยีดิจิทัล</p>
+                    <p><strong>วัตถุประสงค์ของเว็บไซต์:</strong> เว็บไซต์ RomanceFlix นี้จัดทำขึ้นเพื่อรวบรวมและแนะนำภาพยนตร์ไทยแนวโรแมนติกที่ได้รับความนิยม พร้อมรายละเอียดนักแสดง เรื่องย่อ และช่องทางการรับชมอย่างถูกต้องตามลิขสิทธิ์</p>
+                </div>
+
+                <div class="creator-socials">
+                    <a href="#" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" title="GitHub"><i class="fa-brands fa-github"></i></a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal Popup -->
+    <div class="modal" id="movieModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <div class="modal-body">
+                <div class="video-container">
+                    <iframe id="modalYoutubeIframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <div class="modal-details">
+                    <div class="modal-title-group">
+                        <h2 class="modal-title" id="modalTitle"></h2>
+                        <div class="modal-subinfo">
+                            <span id="modalYear"></span>
+                            <span id="modalRating"></span>
+                            <span id="modalRevenue"></span>
+                        </div>
+                    </div>
+
+                    <div class="modal-section-title"><i class="fa-solid fa-user-group"></i> นักแสดงนำ</div>
+                    <p class="modal-text" id="modalCast"></p>
+
+                    <div class="modal-section-title"><i class="fa-solid fa-book-open"></i> เรื่องย่ออย่างรายละเอียด</div>
+                    <p class="modal-text" id="modalSynopsis"></p>
+
+                    <div class="modal-section-title"><i class="fa-solid fa-star"></i> จุดเด่นและเหตุผลที่ต้องดู</div>
+                    <p class="modal-text" id="modalHighlight"></p>
+
+                    <div class="modal-section-title"><i class="fa-solid fa-circle-check"></i> ช่องทางรับชมอย่างเป็นทางการ (ถูกลิขสิทธิ์)</div>
+                    <div class="platforms-container" id="modalPlatforms"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Script ควบคุมแสงตามเมาส์ เส้นประกายระยิบระยับ และคลิก ---
+        const cursorGlow = document.getElementById('cursor-glow');
+        let throttleTimer = false;
+
+        window.addEventListener('mousemove', (e) => {
+            cursorGlow.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+
+            if (!throttleTimer) {
+                throttleTimer = true;
+                setTimeout(() => {
+                    throttleTimer = false;
+                }, 40);
+
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                const size = Math.random() * 6 + 4;
+                sparkle.style.width = `${size}px`;
+                sparkle.style.height = `${size}px`;
+                sparkle.style.left = `${e.clientX + (Math.random() * 10 - 5)}px`;
+                sparkle.style.top = `${e.clientY + (Math.random() * 10 - 5)}px`;
+                
+                document.body.appendChild(sparkle);
+
+                setTimeout(() => {
+                    sparkle.remove();
+                }, 700);
+            }
+        });
+
+        window.addEventListener('click', (e) => {
+            const ripple = document.createElement('div');
+            ripple.className = 'click-ripple';
+            ripple.style.left = `${e.clientX}px`;
+            ripple.style.top = `${e.clientY}px`;
+            document.body.appendChild(ripple);
+
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+
+        function showPage(pageName) {
+            document.getElementById('homePage').classList.remove('active');
+            document.getElementById('moviesPage').classList.remove('active');
+            document.getElementById('creatorPage').classList.remove('active');
+            
+            const navHome = document.getElementById('nav-home');
+            const navMovies = document.getElementById('nav-movies');
+            const navCreator = document.getElementById('nav-creator');
+
+            [navHome, navMovies, navCreator].forEach(nav => {
+                nav.classList.remove('active', 'disabled');
+            });
+
+            if (pageName === 'home') {
+                document.getElementById('homePage').classList.add('active');
+                navHome.classList.add('active');
+                navMovies.classList.add('disabled');
+            } 
+            else if (pageName === 'movies') {
+                document.getElementById('moviesPage').classList.add('active');
+                navMovies.classList.add('active');
+                navHome.classList.add('disabled');
+                navCreator.classList.add('disabled');
+            } 
+            else if (pageName === 'creator') {
+                document.getElementById('creatorPage').classList.add('active');
+                navCreator.classList.add('active');
+                navHome.classList.add('disabled');
+                navMovies.classList.add('disabled');
+            }
+        }
+
+        showPage('home');
+
+        function toggleBackground() {
+            document.body.classList.toggle('alt-theme');
+        }
+
+        const movies = [
+            {
+                id: 1,
+                title: "สิ่งเล็กเล็กที่เรียกว่า...รัก",
+                year: "2553",
+                rating: "7.7",
+                revenue: "80 ล้านบาท",
+                cast: "มาริโอ้ เมาเร่อ (พี่โชน), พิมพ์ชนก ลือวิเศษไพบูลย์ (น้ำ)",
+                synopsis: "'น้ำ' เด็กสาว ม.1 หน้าตาธรรมดาและไม่มีจุดเด่น แอบตกหลุมรัก 'พี่โชน' รุ่นพี่ ม.4 สุดฮอต เธอจึงพยายามเปลี่ยนแปลงตัวเองครั้งใหญ่เพื่อพัฒนาตนเองและคว้าหัวใจพี่โชน",
+                highlight: "ผลงานโรแมนติก-คอเมดี้ระดับตำนานที่ถ่ายทอดความรู้สึกของการ 'แอบรัก' ได้อย่างตราตรึงใจแฟนๆ ทั่วเอเชีย",
+                img: "leklek.jpg",
+                youtubeId: "WsTAacUV2dI",
+                platforms: [
+                    { name: "Netflix", url: "https://www.netflix.com/th/title/80186358", icon: "fa-tv" },
+                    { name: "TrueID", url: "https://movie.trueid.net/detail/y2m5M3j4mG5a", icon: "fa-circle-play" }
+                ]
+            },
+            {
+                id: 2,
+                title: "กวน มึน โฮ",
+                year: "2553",
+                rating: "7.5",
+                revenue: "125 ล้านบาท",
+                cast: "ฉันทวิชช์ ธนะเสวี (ด่าง), หนึ่งธิดา โสภณ (เมย์)",
+                synopsis: "ชายหนุ่มสุดกวนที่เพิ่งอกหัก บังเอิญพบกับหญิงสาวที่เดินทางมาเกาหลีใต้คนเดียว ทั้งคู่ตกลงท่องเที่ยวด้วยกันภายใต้เงื่อนไข 'ห้ามรู้จักชื่อกันและกัน'",
+                highlight: "หนังโรแมนติกคอมเมดี้ฉากหลังเกาหลี มุกตลกคมคาย และเคมีการแสดงที่ยอดเยี่ยม",
+                img: "guea.jpg",
+                youtubeId: "U3ndnN643Ko",
+                platforms: [
+                    { name: "Netflix", url: "https://www.netflix.com/th/title/81131464", icon: "fa-tv" }
+                ]
+            },
+            {
+                id: 3,
+                title: "คิดถึงวิทยา",
+                year: "2557",
+                rating: "7.8",
+                revenue: "101 ล้านบาท",
+                cast: "สุกฤษฎิ์ วิเศษแก้ว (ครูสอง), เฌอมาลย์ บุญยศักดิ์ (ครูแอน)",
+                synopsis: "ครูสอนโรงเรียนเรือนแพกลางเขื่อน ได้พบกับ 'ไดอารี่' ของครูคนเก่าที่ย้ายออกไป จนเกิดความผูกพันและตกหลุมรักเจ้าของไดอารี่ทั้งที่ไม่เคยพบหน้า",
+                highlight: "เล่าเรื่องราวความรักผ่านห้วงเวลาและตัวอักษร บรรยากาศธรรมชาติตต่างจังหวัดอบอุ่นหัวใจ",
+                img: "anasx3.jpg",
+                youtubeId: "I5QlFDuAgb4",
+                platforms: [
+                    { name: "Netflix", url: "https://www.netflix.com/th/title/80019705", icon: "fa-tv" }
+                ]
+            },
+            {
+                id: 4,
+                title: "ไอฟาย..แต๊งกิ้ว..เลิฟยู",
+                year: "2557",
+                rating: "7.0",
+                revenue: "330 ล้านบาท",
+                cast: "ซันนี่ สุวรรณเมธานนท์ (ยิม), ปรีชญา พงษ์ธนานิกร (เพลง)",
+                synopsis: "ติวเตอร์ภาษาอังกฤษสาวสวย ต้องช่วยติวภาษาอังกฤษแบบเร่งด่วนให้กับช่างเครื่องหนุ่มสายลุย เพื่อให้เขาสอบสัมภาษณ์ย้ายไปทำงานง้อแฟนต่างชาติ",
+                highlight: "หนังโรแมนติกคอมเมดี้ทำรายได้มหาศาล พร้อมมุกตลกเฉพาะตัวของซันนี่",
+                img: "anasx2.jpg",
+                youtubeId: "w5V3RGIgSL4",
+                platforms: [
+                    { name: "Netflix", url: "https://www.netflix.com/th/title/80038883", icon: "fa-tv" }
+                ]
+            },
+            {
+                id: 5,
+                title: "แฟนเดย์..แฟนกันแค่วันเดียว",
+                year: "2559",
+                rating: "7.7",
+                revenue: "111 ล้านบาท",
+                cast: "ฉันทวิชช์ ธนะเสวี (เด่นชัย), นิษฐา จิรยั่งยืน (นุ้ย)",
+                synopsis: "พนักงานไอทีไร้ตัวตน แอบรักสาวมาร์เก็ตติ้งคนสวย เมื่อเธอประสบอุบัติเหตุความจำเสื่อมชั่วคราว 1 วัน เขาจึงแอบสวมรอยเป็นแฟนเพื่อสร้างความทรงจำร่วมกัน",
+                highlight: "บรรยากาศหิมะสวยงามของฮอกไกโด กับบทสรุปความรักที่ตราตรึงและซาบซึ้ง",
+                img: "fandy.png",
+                youtubeId: "8G_kZtIF6mE",
+                platforms: [
+                    { name: "Netflix", url: "https://www.netflix.com/th/title/80141381", icon: "fa-tv" }
+                ]
+            },
+            {
+                id: 6,
+                title: "Friend Zone ระวัง..สิ้นสุดทางเพื่อน",
+                year: "2562",
+                rating: "7.2",
+                revenue: "130 ล้านบาท",
+                cast: "ณภัทร เสียงสมบุญ (ปาล์ม), พิมพ์ชนก ลือวิเศษไพบูลย์ (กิ๊ง)",
+                synopsis: "เรื่องราวของสจ๊วตหนุ่มที่ติดอยู่ในสเตตัส 'เพื่อนสนิท' ของหญิงสาวคนเดิมมานานกว่า 10 ปี จนกระทั่งเขาตัดสินใจลองเสี่ยงก้าวข้ามเซฟโซน",
+                highlight: "โดนใจคนติด Friend Zone งานภาพสวย ถ่ายทำหลายประเทศในเอเชีย",
+                img: "anas.png",
+                youtubeId: "4S81gZQ68LE",
+                platforms: [
+                    { name: "Netflix", url: "https://www.netflix.com/th/title/81100902", icon: "fa-tv" }
+                ]
+            },
+            {
+                id: 7,
+                title: "แฟนฉัน",
+                year: "2546",
+                rating: "8.0",
+                revenue: "137 ล้านบาท",
+                cast: "ชาลี ไตรรัตน์ (เจี๊ยบ), โฟกัส จีระกุล (น้อยหน่า)",
+                synopsis: "เรื่องราวความทรงจำในอดีตยุค 80s ของเด็กชายกับเพื่อนสาววัยเด็ก สะท้อนบรรยากาศความอบอุ่น ความผิดพลาด และความทรงจำไร้เดียงสา",
+                highlight: "ภาพยนตร์คลาสสิกขึ้นหิ้งที่ปลุกกระแสความทรงจำวัยเด็กและเพลงยุค 80s",
+                img: "fan.png",
+                youtubeId: "M_46VlMcicA",
+                platforms: [
+                    { name: "Netflix", url: "https://www.netflix.com/th/title/70014072", icon: "fa-tv" }
+                ]
+            },
+            {
+                id: 8,
+                title: "บุพเพสันนิวาส ๒",
+                year: "2565",
+                rating: "6.7",
+                revenue: "392 ล้านบาท",
+                cast: "ธนวรรธน์ วรรธนะภูติ (ภพ), ราณี แคมเปน (เกสร)",
+                synopsis: "การกลับชาติมาเกิดใหม่ในยุครัตนโกสินทร์ตอนต้น เมื่อชายหนุ่มผู้เชื่อในพรหมลิขิตได้พบกับหญิงสาวหัวสมัยใหม่ที่ไม่เชื่อเรื่องดวงชะตา",
+                highlight: "ต่อยอดความสำเร็จจากละครทีวี สู่ภาพยนตร์โรแมนติกฟอร์มยักษ์ทำรายได้ถล่มทลาย",
+                img: "bub.jpg",
+                youtubeId: "4xnOF6IOc1U",
+                platforms: [
+                    { name: "Netflix", url: "https://www.netflix.com/th/title/81639974", icon: "fa-tv" }
+                ]
+            },
+            {
+                id: 9,
+                title: "เพื่อนสนิท",
+                year: "2548",
+                rating: "7.7",
+                revenue: "80 ล้านบาท",
+                cast: "ซันนี่ สุวรรณเมธานนท์ (ไข่ย้อย), ศิรพันธ์ วัฒนจินดา (ดากานดา)",
+                synopsis: "นักศึกษาวิจิตรศิลป์ มช. แอบรักเพื่อนสนิท แต่ไม่เคยกล้าเปิดเผย จนกระทั่งวันจบการศึกษาที่บีบให้เขาต้องเผชิญกับความรู้สึกตนเอง",
+                highlight: "ภาพยนตร์รักโรแมนติกที่ครองใจวัยรุ่น ถ่ายทอดเสน่ห์เชียงใหม่และพะงันอย่างงดงาม",
+                img: "fei.png",
+                youtubeId: "Rn6nL1a2stc",
+                platforms: [
+                    { name: "Netflix", url: "https://www.netflix.com/th/title/70081395", icon: "fa-tv" }
+                ]
+            },
+            {
+                id: 10,
+                title: "อนงค์ (My Boo)",
+                year: "2567",
+                rating: "7.5",
+                revenue: "150 ล้านบาท",
+                cast: "สุทธิรักษ์ ทรัพย์วิจิตร (โจ), เมลดา สุศรี (อนงค์)",
+                synopsis: "เกมเมอร์หนุ่มได้รับมรดกบ้านโบราณ แต่เมื่อเข้าไปอยู่กลับพบผีสาวเจ้าของบ้านเดิม ทั้งคู่จึงจับมือทำธุรกิจบ้านผีสิงร่วมกันจนเกิดเป็นความรัก",
+                highlight: "หนังโรแมนติกคอมเมดี้ผสมผีสุดน่ารัก เคมีเข้ากันอย่างลงตัวของโบว์ เมลดา และจี๋ สุทธิรักษ์",
+                img: "mybooanas.png",
+                youtubeId: "gTb31JhG-lo",
+                    platforms: [
+                    { name: "Netflix", url: "https://www.netflix.com/th/title/81775836", icon: "fa-tv" }
+                ]
+            }
+        ];
+
+        // เรนเดอร์หนังหน้าภาพยนตร์ปกติ
+        const movieGrid = document.getElementById('movieGrid');
+        function renderMovies(movieList) {
+            movieGrid.innerHTML = '';
+            movieList.forEach(movie => {
+                const card = document.createElement('div');
+                card.className = 'movie-card';
+                card.onclick = () => openModal(movie);
+                
+                card.innerHTML = `
+                    <div class="poster-container">
+                        <span class="year-tag">${movie.year}</span>
+                        <img src="${movie.img}" alt="${movie.title}">
+                    </div>
+                    <div class="movie-info">
+                        <h3>${movie.title}</h3>
+                        <div class="movie-meta">
+                            <span class="rating"><i class="fa-solid fa-star"></i> ${movie.rating}</span> | 
+                            <span class="revenue">${movie.revenue}</span>
+                        </div>
+                    </div>
+                `;
+                movieGrid.appendChild(card);
+            });
+        }
+        renderMovies(movies);
+
+        // เรนเดอร์หนังไฮไลท์ 4 เรื่องแรกในหน้าแรกแก้โล่ง
+        const miniMovieGrid = document.getElementById('miniMovieGrid');
+        function renderMiniMovies() {
+            miniMovieGrid.innerHTML = '';
+            // หยิบมาแสดง 4 เรื่องแรก
+            movies.slice(0, 4).forEach(movie => {
+                const card = document.createElement('div');
+                card.className = 'mini-movie-card';
+                card.onclick = () => openModal(movie);
+                
+                card.innerHTML = `
+                    <div class="mini-poster">
+                        <img src="${movie.img}" alt="${movie.title}">
+                    </div>
+                    <div class="mini-info">
+                        <h4>${movie.title}</h4>
+                        <span><i class="fa-solid fa-star"></i> ${movie.rating}</span>
+                    </div>
+                `;
+                miniMovieGrid.appendChild(card);
+            });
+        }
+        renderMiniMovies();
+
+        function openModal(movie) {
+            const iframe = document.getElementById('modalYoutubeIframe');
+            iframe.src = `https://www.youtube.com/embed/${movie.youtubeId}?autoplay=1`;
+
+            document.getElementById('modalTitle').innerText = movie.title;
+            document.getElementById('modalYear').innerText = "ปีที่ฉาย: " + movie.year;
+            document.getElementById('modalRating').innerText = "★ IMDb: " + movie.rating;
+            document.getElementById('modalRevenue').innerText = "รายได้: " + movie.revenue;
+            document.getElementById('modalCast').innerText = movie.cast;
+            document.getElementById('modalSynopsis').innerText = movie.synopsis;
+            document.getElementById('modalHighlight').innerText = movie.highlight;
+            
+            const platformsContainer = document.getElementById('modalPlatforms');
+            platformsContainer.innerHTML = '';
+            
+            movie.platforms.forEach(p => {
+                const btn = document.createElement('a');
+                btn.className = 'platform-btn';
+                btn.href = p.url;
+                btn.target = '_blank';
+                btn.innerHTML = `<i class="fa-solid ${p.icon}"></i> ${p.name}`;
+                platformsContainer.appendChild(btn);
+            });
+
+            document.getElementById('movieModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('modalYoutubeIframe').src = "";
+            document.getElementById('movieModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('movieModal')) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>

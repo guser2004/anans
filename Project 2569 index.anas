@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RomanceFlix - ภาพยนตร์โรแมนติกแนะนำ</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Kanit', sans-serif;
+        }
+
+        body {
+            background-color: #070a14;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* --- Navbar --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            background-color: rgba(7, 10, 20, 0.95);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 22px;
+            font-weight: bold;
+            font-style: italic;
+            color: #ffffff;
+        }
+
+        .logo i { color: #ff3366; }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        nav a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.3s;
+        }
+
+        nav a.active, nav a:hover { color: #ffffff; }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .search-bar {
+            position: relative;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 6px 15px 6px 35px;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 12px;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .search-bar input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #fff;
+            font-size: 12px;
+            width: 150px;
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, #ff3366, #ff5e83);
+            color: white;
+            border: none;
+            padding: 6px 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            box-shadow: 0 3px 10px rgba(255, 51, 102, 0.3);
+            transition: 0.3s;
+        }
+
+        /* --- Hero Banner --- */
+        .hero {
+            margin: 0 5%;
+            position: relative;
+            height: 420px;
+            border-radius: 20px;
+            background: linear-gradient(to right, rgba(7, 10, 20, 0.95) 35%, rgba(7, 10, 20, 0.35) 70%), 
+                        url('wwwww.jfif') center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            padding: 0 50px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .hero-content { max-width: 500px; z-index: 2; }
+        .hero-subtitle { font-family: 'Great Vibes', cursive; color: #ff9ebb; font-size: 26px; }
+        .hero-title { font-size: 48px; font-weight: 800; background: linear-gradient(45deg, #ffffff, #ff79b0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
+        .hero-desc { color: #94a3b8; font-size: 13px; margin-bottom: 20px; line-height: 1.6; }
+
+        .btn-watch {
+            background: linear-gradient(135deg, #ff3366, #ff5e83);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 25px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(255, 51, 102, 0.4);
+        }
+
+        /* --- Section: Movie Cards --- */
+        .section { padding: 30px 5%; }
+        .section-header { margin-bottom: 20px; }
+        .section-title h2 { font-size: 20px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .section-title i { color: #ff3366; }
+
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+        }
+
+        .movie-card {
+            background: #0d1222;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 51, 102, 0.5);
+            box-shadow: 0 10px 20px rgba(255, 51, 102, 0.2);
+        }
+
+        .poster-container {
+            position: relative;
+            height: 220px;
+            width: 100%;
+        }
+
+        .poster-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .year-tag {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(7, 10, 20, 0.85);
+            border: 1px solid rgba(255, 51, 102, 0.4);
+            color: #ff79b0;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .movie-info { padding: 12px; }
+        .movie-info h3 { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; }
+        .movie-meta { font-size: 11px; color: #94a3b8; margin-top: 4px; }
+        .movie-meta .rating { color: #ffc107; font-weight: 600; }
+        .movie-meta .revenue { color: #ff5e83; font-weight: 500; }
+
+        /* --- Modal Popup --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #0d1222;
+            border: 1px solid rgba(255, 51, 102, 0.3);
+            border-radius: 16px;
+            max-width: 700px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px; right: 20px;
+            font-size: 24px;
+            color: #94a3b8;
+            cursor: pointer;
+            z-index: 10;
+            transition: 0.3s;
+        }
+
+        .close-btn:hover { color: #ff3366; }
+
+        .modal-body { display: flex; flex-direction: column; }
+        .modal-img-container { height: 320px; width: 100%; position: relative; }
+        .modal-img-container img { width: 100%; height: 100%; object-fit: cover; }
+        .modal-details { padding: 25px; }
+
+        .modal-title-group { margin-bottom: 15px; }
+        .modal-title { font-size: 24px; font-weight: 700; color: #ffffff; }
+        .modal-subinfo { font-size: 13px; color: #ff79b0; margin-top: 4px; display: flex; gap: 15px; }
+
+        .modal-section-title { color: #ff3366; font-size: 14px; font-weight: 600; margin-top: 15px; margin-bottom: 5px; }
+        .modal-text { color: #cbd5e1; font-size: 13px; line-height: 1.6; }
+
+        .trailer-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #ff3366, #ff5e83);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-top: 20px;
+            box-shadow: 0 4px 12px rgba(255, 51, 102, 0.3);
+        }
+
+        @media (max-width: 1024px) { .movie-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 600px) { .movie-grid { grid-template-columns: repeat(2, 1fr); } nav { display: none; } }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo"><i class="fa-solid fa-heart"></i> RomanceFlix</div>
+        <nav>
+            <ul>
+                <li><a href="#" class="active"><i class="fa-solid fa-house"></i> Home</a></li>
+                <li><a href="#"><i class="fa-solid fa-film"></i> Movies</a></li>
+                <li><a href="#"><i class="fa-regular fa-heart"></i> Romance</a></li>
+            </ul>
+        </nav>
+        <div class="header-right">
+            <div class="search-bar">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="ค้นหาหนัง...">
+            </div>
+            <button class="login-btn">Login</button>
+        </div>
+    </header>
+
+    <!-- Hero Banner -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-subtitle">กติกาของเพื่อนสนิท ห้ามแอบรักกัน <i class="fa-regular fa-heart"></i></div>
+            <h1 class="hero-title">FRIEND ZONE</h1>
+            <p class="hero-desc">เรื่องราวของคนสองคนที่ติดอยู่ในสถานะ "เพื่อนสนิท" มายาวนานกว่า 10 ปี ความรักสุดฮา อบอุ่น และซาบซึ้งใจที่คนแอบรักเพื่อนทุกคนต้องเคยเจอ</p>
+            <a href="https://www.youtube.com/watch?v=13I7uJg3Oso" target="_blank" class="btn-watch"><i class="fa-solid fa-circle-play"></i> รับชมตัวอย่าง</a>
+        </div>
+    </section>
+
+    <!-- Section 10 Movies -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title">
+                <h2><i class="fa-solid fa-heart"></i> ภาพยนตร์โรแมนติกแนะนำ (คลิกที่การ์ดเพื่อดูรายละเอียด)</h2>
+            </div>
+        </div>
+
+        <div class="movie-grid" id="movieGrid">
+            <!-- รายการหนังจะถูกสร้างขึ้นด้วย JavaScript -->
+        </div>
+    </section>
+
+    <!-- Modal Popup -->
+    <div class="modal" id="movieModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <div class="modal-body">
+                <div class="modal-img-container">
+                    <img id="modalImg" src="" alt="poster">
+                </div>
+                <div class="modal-details">
+                    <div class="modal-title-group">
+                        <h2 class="modal-title" id="modalTitle"></h2>
+                        <div class="modal-subinfo">
+                            <span id="modalYear"></span>
+                            <span id="modalRating"></span>
+                            <span id="modalRevenue"></span>
+                        </div>
+                    </div>
+
+                    <div class="modal-section-title"><i class="fa-solid fa-user-group"></i> นักแสดงนำ</div>
+                    <p class="modal-text" id="modalCast"></p>
+
+                    <div class="modal-section-title"><i class="fa-solid fa-book-open"></i> เรื่องย่อ</div>
+                    <p class="modal-text" id="modalSynopsis"></p>
+
+                    <div class="modal-section-title"><i class="fa-solid fa-star"></i> จุดเด่นภาพยนตร์</div>
+                    <p class="modal-text" id="modalHighlight"></p>
+
+                    <a href="#" target="_blank" class="trailer-btn" id="modalTrailer"><i class="fa-solid fa-play"></i> รับชมตัวอย่างภาพยนตร์ (YouTube)</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const movies = [
+            {
+                id: 1,
+                title: "สิ่งเล็กเล็กที่เรียกว่า...รัก",
+                year: "2553",
+                rating: "7.7",
+                revenue: "80 ล้านบาท",
+                cast: "มาริโอ้ เมาเร่อ (พี่โชน), พิมพ์ชนก ลือวิเศษไพบูลย์ (น้ำ)",
+                synopsis: "'น้ำ' เด็กสาว ม.1 หน้าตาธรรมดาๆ ที่แอบรัก 'พี่โชน' รุ่นพี่ ม.4 สุดฮอตประจำโรงเรียน เธอจึงพยายามทำทุกวิถีทาง ไม่ว่าจะเป็นการเรียน กิจกรรม และเปลี่ยนตัวเองให้สวยขึ้น เพื่อให้พี่โชนหันมามอง",
+                highlight: "หนังรักฟีลกู้ดระดับตำนาน สะท้อนช่วงเวลาแอบรักในวัยเรียนได้อย่างงดงามและกินใจ",
+                img: "leklek.jpg",
+                trailer: "https://www.youtube.com/watch?v=WsTAacUV2dI"
+            },
+            {
+                id: 2,
+                title: "กวน มึน โฮ",
+                year: "2553",
+                rating: "7.5",
+                revenue: "125 ล้านบาท",
+                cast: "ฉันทวิชช์ ธนะเสวี, หนึ่งธิดา โสภณ",
+                synopsis: "ชายหนุ่มและหญิงสาวชาวไทยสองคนที่เดินทางไปท่องเที่ยวประเทศเกาหลีใต้โดยบังเอิญ ทั้งสองตกลงที่จะเที่ยวด้วยกันโดย 'ไม่ถามชื่อ และไม่รู้จักชื่อกัน' เพื่อตักตวงความสุขได้อย่างเต็มที่ จนเกิดเป็นความผูกพัน",
+                highlight: "ความสัมพันธ์แบบ 'ไม่รู้จักชื่อ แต่เข้าอกเข้าใจ' ผสมผสานความตลกขำกลิ้งและบทสรุปที่ซาบซึ้ง",
+                img: "guea.jpg",
+                trailer: "https://www.youtube.com/watch?v=U3ndnN643Ko"
+            },
+            {
+                id: 3,
+                title: "คิดถึงวิทยา",
+                year: "2557",
+                rating: "7.8",
+                revenue: "101 ล้านบาท",
+                cast: "สุกฤษฎิ์ วิเศษแก้ว (ครูสอง), เฌอมาลย์ บุญยศักดิ์ (ครูแอน)",
+                synopsis: "'ครูสอง' ย้ายไปสอนโรงเรียนเรือนแพกลางเขื่อนที่ไร้สัญญาณสื่อสาร เขาพบกับไดอารี่ของ 'ครูแอน' ครูคนเก่าที่เขียนทิ้งไว้ การอ่านไดอารี่ทำให้เขาตกหลุมรักเจ้าของบันทึกที่ไม่เคยพบหน้ากันมาก่อน",
+                highlight: "พล็อตเรื่องโรแมนติกงดงาม เล่าเรื่องราวความรักผ่านห้วงเวลาและบันทึกไดอารี่",
+                img: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=600&q=80",
+                trailer: "https://www.youtube.com/watch?v=I5QlFDuAgb4"
+            },
+            {
+                id: 4,
+                title: "ไอฟาย..แต๊งกิ้ว..เลิฟยู",
+                year: "2557",
+                rating: "7.0",
+                revenue: "330 ล้านบาท",
+                cast: "ซันนี่ สุวรรณเมธานนท์ (ยิม), ปรีชญา พงษ์ธนานิกร (เพลง)",
+                synopsis: "'เพลง' ติวเตอร์ภาษาอังกฤษสาว ต้องมาช่วยสอนภาษาอังกฤษแบบเคี่ยวกรำให้แก่ 'ยิม' ช่างเครื่องบ้านๆ ที่ต้องการสอบผ่านเพื่อตามไปง้อแฟนต่างชาติ การสอนสุดป่วนจึงกลายเป็นความรัก",
+                highlight: "โรแมนติกคอเมดี้ทำรายได้ทะลุ 300 ล้านบาท มุกตลกธรรมชาติและเคมีพระนางที่ลงตัว",
+                img: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=600&q=80",
+                trailer: "https://www.youtube.com/watch?v=w5V3RGIgSL4"
+            },
+            {
+                id: 5,
+                title: "แฟนเดย์..แฟนกันแค่วันเดียว",
+                year: "2559",
+                rating: "7.7",
+                revenue: "111 ล้านบาท",
+                cast: "ฉันทวิชช์ ธนะเสวี (เด่นชัย), นิษฐา จิรยั่งยืน (นุ้ย)",
+                synopsis: "'เด่นชัย' หนุ่มไอทีไร้ตัวตนแอบรัก 'นุ้ย' สาวสวยการตลาด วันหนึ่งนุ้ยประสบอุบัติเหตุจนจำความไม่ได้ชั่วคราวเป็นเวลา 1 วัน เด่นชัยจึงโกหกว่าเขาคือแฟนของเธอ เพื่อสัมผัสความสุขสั้นๆ เพียงแค่วันเดียว",
+                highlight: "ความรักซึ้งๆ ของคนไร้ตัวตน ท่ามกลางฉากหลังหิมะสวยงามที่ฮอกไกโด",
+                img: "https://images.unsplash.com/photo-1494774157365-9e04c6720e47?auto=format&fit=crop&w=600&q=80",
+                trailer: "https://www.youtube.com/watch?v=8G_kZtIF6mE"
+            },
+            {
+                id: 6,
+                title: "Friend Zone ระวัง..สิ้นสุดทางเพื่อน",
+                year: "2562",
+                rating: "7.2",
+                revenue: "130 ล้านบาท",
+                cast: "ณภัทร เสียงสมบุญ (ปาล์ม), พิมพ์ชนก ลือวิเศษไพบูลย์ (กิ๊ง)",
+                synopsis: "'ปาล์ม' ติดอยู่ในสถานะเพื่อนสนิทของ 'กิ๊ง' มายาวนานกว่า 10 ปี เมื่อกิ๊งเจอปัญหาหัวใจ ปาล์มจึงตัดสินใจว่าถึงเวลาแล้วที่จะข้ามเส้น Friend Zone แม้ต้องเสี่ยงเสียเพื่อนไปก็ตาม",
+                highlight: "สะท้อนความสัมพันธ์ติดหล่ม Friend Zone ของคนรุ่นใหม่ได้ตรงจุด ถ่ายทำหลายประเทศในเอเชีย",
+                // เปลี่ยนเป็นไฟล์ anas.png เรียบร้อยแล้ว
+                img: "anas.png",
+                trailer: "https://www.youtube.com/watch?v=13I7uJg3Oso"
+            },
+            {
+                id: 7,
+                title: "ฮาวทูทิ้ง..ทิ้งอย่างไรไม่ให้เหลือเธอ",
+                year: "2562",
+                rating: "7.2",
+                revenue: "57 ล้านบาท",
+                cast: "ชุติมณฑน์ จึงเจริญสุขยิ่ง (จีน), ซันนี่ สุวรรณเมธานนท์ (เอ็ม)",
+                synopsis: "'จีน' ต้องการเคลียร์บ้านสไตล์มินิมอล แต่ของเก่าพาเธอไปเจอของขวัญจาก 'เอ็ม' แฟนเก่าที่เคยทิ้งไป การเอาของไปคืนจึงกลายเป็นการเผชิญหน้ากับความทรงจำและความรู้สึกที่ค้างคา",
+                highlight: "หนังดราม่าสไตล์ เต๋อ นวพล ที่ตั้งคำถามเรื่องการมูฟออนและการจัดการความทรงจำ",
+                img: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80",
+                trailer: "https://www.youtube.com/watch?v=SRWzKctMD6Q"
+            },
+            {
+                id: 8,
+                title: "บุพเพสันนิวาส ๒",
+                year: "2565",
+                rating: "6.7",
+                revenue: "392 ล้านบาท",
+                cast: "ธนวรรธน์ วรรธนะภูติ (ภพ), ราณี แคมเปน (เกสร)",
+                synopsis: "ชาติภพใหม่ในยุครัตนโกสินทร์ตอนต้น 'ภพ' ชายหนุ่มผู้เชื่อในพรหมลิขิตได้พบกับ 'เกสร' หญิงสาวที่หน้าเหมือนสตรีในฝัน แต่เกสรกลับไม่เชื่อเรื่องดวงชะตา ภพจึงต้องพยายามทำทุกทางเพื่อเอาชนะใจเธอ",
+                highlight: "หนังรักย้อนยุคฟอร์มยักษ์ สนุกสนาน ซีจีตระการตา ทำรายได้สูงสุดแห่งปี",
+                img: "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=600&q=80",
+                trailer: "https://www.youtube.com/watch?v=4xnOF6IOc1U"
+            },
+            {
+                id: 9,
+                title: "วิมานหนาม",
+                year: "2567",
+                rating: "7.6",
+                revenue: "150 ล้านบาท",
+                cast: "เจฟ ซาเตอร์, อิงฟ้า วราหะ, พงศกร เมตตาริกนนท์",
+                synopsis: "การต่อสู้เพื่อปกป้องสวนทุเรียนและบ้านซึ่งเป็นมรดกแห่งความรักและความเหน็ดเหนื่อยของคู่รัก ท่ามกลางช่องว่างทางกฎหมายและความขัดแย้งในครอบครัว",
+                highlight: "ดราม่าโรแมนติกเข้มข้น สะท้อนการต่อสู้เพื่อสิทธิ ความเท่าเทียม และคนรักอย่างลึกซึ้ง",
+                img: "https://images.unsplash.com/photo-1509114397022-ed747cca3f65?auto=format&fit=crop&w=600&q=80",
+                trailer: "https://www.youtube.com/watch?v=yQzx9bO9t8I"
+            },
+            {
+                id: 10,
+                title: "ซัมเมอร์นั้น...ฉันตกหลุมรัก",
+                year: "2568",
+                rating: "7.4",
+                revenue: "75 ล้านบาท",
+                cast: "นักแสดงวัยรุ่นดาวรุ่งยุคใหม่",
+                synopsis: "เรื่องราว Coming-of-age ในช่วงฤดูร้อนของกลุ่มวัยรุ่นริมชายหาดทะเลไทย ที่เต็มไปด้วยความทรงจำ สายลม แสงแดด และการพบกับรักครั้งแรกที่ยากจะลืมเลือน",
+                highlight: "โทนภาพสวยละมุน สื่อบรรยากาศความรักช่วงซัมเมอร์ที่อบอุ่นและสว่างไสว",
+                img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80",
+                trailer: "https://www.youtube.com/watch?v=13I7uJg3Oso"
+            }
+        ];
+
+        const movieGrid = document.getElementById('movieGrid');
+        
+        movies.forEach(movie => {
+            const card = document.createElement('div');
+            card.className = 'movie-card';
+            card.onclick = () => openModal(movie);
+            
+            card.innerHTML = `
+                <div class="poster-container">
+                    <span class="year-tag">${movie.year}</span>
+                    <img src="${movie.img}" alt="${movie.title}">
+                </div>
+                <div class="movie-info">
+                    <h3>${movie.title}</h3>
+                    <div class="movie-meta">
+                        <span class="rating"><i class="fa-solid fa-star"></i> ${movie.rating}</span> | 
+                        <span class="revenue">${movie.revenue}</span>
+                    </div>
+                </div>
+            `;
+            movieGrid.appendChild(card);
+        });
+
+        function openModal(movie) {
+            document.getElementById('modalImg').src = movie.img;
+            document.getElementById('modalTitle').innerText = movie.title;
+            document.getElementById('modalYear').innerText = "ปีที่ฉาย: " + movie.year;
+            document.getElementById('modalRating').innerText = "★ IMDb: " + movie.rating;
+            document.getElementById('modalRevenue').innerText = "รายได้: " + movie.revenue;
+            document.getElementById('modalCast').innerText = movie.cast;
+            document.getElementById('modalSynopsis').innerText = movie.synopsis;
+            document.getElementById('modalHighlight').innerText = movie.highlight;
+            document.getElementById('modalTrailer').href = movie.trailer;
+
+            document.getElementById('movieModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('movieModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('movieModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
